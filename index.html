@@ -1,7 +1,340 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Deezer 🎆</title>
+  
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+        body {
+            margin: 0;
+            background: #000;
+            color: white;
+            font-family: sans-serif;
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+        }
+
+        p {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            color: #A238FF;
+            z-index: 10;
+            text-align: center;
+            font-size: 400%;
+            line-height: 6;
+        }
+
+        .deezer-widget {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 47%;
+            z-index: 10;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .text-boxes {
+            top: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
+        }
+
+        .box {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            color: white;
+            font-size: 1.1em;
+            border: 1px solid #A238FF;
+        }
+
+        h3 {
+            margin-top: 0;
+            color: #A238FF;
+        }
+
+        .album-slider-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .album-slider {
+            display: flex;
+            transition: transform 0.6s ease-in-out;
+            width: 200%;
+        }
+
+        .album {
+            width: 50%;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .album img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px auto 0 auto;
+            border-radius: 10px;
+        }
+
+        .artist {
+            margin-top: 15px;
+            color:grey;
+        }
+
+        .title {
+            font-weight: bold;
+            font-size: 120%;
+            margin-top: 10%;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 45%;
+            right: -5px;
+            transform: translateY(-50%);
+            font-size: 2em;
+            cursor: pointer;
+            user-select: none;
+            z-index: 2;
+        }
+        
+        #words{
+            text-align: justify;
+        }
+
+        .sound-bar-container {
+            background-color: black;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            color: white;
+            font-size: 1.1em;
+            border: 1px solid #A238FF;
+            position: absolute;
+            bottom: -95%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            width: 25%;
+            height: 60px;
+            border-radius: 10px;
+        }
+
+        .sound-bar {
+            width: 20px;
+            height: 20px;
+            background-color: #A238FF;
+            border-radius: 5px;
+            animation: pulse 0.5s ease-in-out infinite;
+        }
+
+        .sound-bar:nth-child(odd) {
+            animation-duration: 0.4s;
+        }
+
+        .sound-bar:nth-child(even) {
+            animation-duration: 0.6s;
+        }
+
+        @keyframes pulse {
+            0% {
+                height: 20px;
+            }
+            50% {
+                height: 50px;
+            }
+            100% {
+                height: 20px;
+            }
+        }
+
+        </style>
+</head>
+
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+    <p>Hire me</p>
+    <div class="deezer-widget">
+        <iframe title="deezer-widget"
+                src="https://widget.deezer.com/widget/dark/track/781592622"
+                width="100%" height="300"
+                frameborder="0" allowtransparency="true"
+                allow="encrypted-media; clipboard-write">
+        </iframe>
+    </div>
+
+    <canvas id="fireworks"></canvas>
+
+    <script>
+        const canvas = document.getElementById("fireworks");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.radius = Math.random() * 1 + 0.5;
+                this.color = color;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.life = 80;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life--;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        let particles = [];
+
+        function createFirework(x, y) {
+            const colors = ['#ff4444', '#44ff44', '#4444ff', '#ffff44', '#ff44ff'];
+            for (let i = 0; i < 40; i++) {
+                particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles = particles.filter(p => p.life > 0);
+            for (let p of particles) {
+                p.update();
+                p.draw();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        function launchSynchronizedFireworks() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height * 0.3;
+
+            const offset = 200;
+
+            createFirework(centerX - offset, centerY);
+            createFirework(centerX + offset, centerY);
+        }
+
+        setInterval(launchSynchronizedFireworks, 2000);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+
+    <p>
+        <div class="text-boxes">
+            <div class="box">
+                <h3>🎶 About me</h3>
+                <div class="album-slider-container">
+                    <div class="album-slider" id="albumSlider">
+                        <div class="album">
+                            <img src="https://www.harrisonsrecords.cl/wp-content/uploads/2021/06/WEEKND-KISS-LAND-SEAGLASS-scaled.jpg" alt="Kiss Land">
+                            <div class="title">Adaptation</div>
+                            <div class="artist">The Weeknd</div>
+                        </div>
+                        <div class="album">
+                            <img src="https://tse1.mm.bing.net/th?id=OIP.eZcJ_unUfgPrSRf7Cx-hEQHaHa&pid=Api" alt="Graduation">
+                            <div class="title">Determinate</div>
+                            <div class="artist">Adam Hicks</div>
+                        </div>
+                        <div class="album">
+                            <img src="https://is5-ssl.mzstatic.com/image/thumb/Music128/v4/7f/e7/22/7fe72288-5b42-2844-f3bf-8bab82dc0e87/Cover.jpg/1200x1200bf-60.jpg" alt="Graduation">
+                            <div class="title">Organized</div>
+                            <div class="artist">Meek Mill</div>
+                        </div>
+                        <div class="album">
+                            <img src="https://cdn.albumoftheyear.org/album/877297-like-a-sunday_011852.jpg" alt="Graduation">
+                            <div class="title">Live to Learn</div>
+                            <div class="artist">Emilie Schiøtt</div>
+                        </div>
+                        <div class="album">
+                            <img src="https://tse1.mm.bing.net/th?id=OIP.qPscRzGWwLFn1ryf01rqGQHaHa&pid=Api" alt="Graduation">
+                            <div class="title">Optimisitc</div>
+                            <div class="artist">Radiohead</div>
+                        </div>
+                    </div>
+                    <div class="arrow" onclick="nextAlbum()">➡️</div>
+                </div>
+            </div>
+            <div class="box">
+                <h3>A few words</h3>
+                <div id="words">
+                    <br>
+                    I'm Eloïse. I would love to join your company!<br><br>
+                    During my 6-months thesis, I worked on databases and linking them with Android apps, with APIs and Docker. <br>
+                    6 months, where Deezer was running every single minute and accompanying me.<br>
+                    I love to learn and I am dedicated. I want to be passionate about my job, I really think working at Deezer, doing programming, would do that for me.<br><br>
+                    Thank you for reading me and I hope to hear from you soon.
+                </div>
+            </div>
+        </div>
+    </p>
+
+    <div class="sound-bar-container">
+        <div class="sound-bar"></div>
+        <div class="sound-bar"></div>
+        <div class="sound-bar"></div>
+        <div class="sound-bar"></div>
+        <div class="sound-bar"></div>
+        <div class="sound-bar"></div>
+    </div>
+
+    <script>
+        let currentIndex = 0;
+        const totalAlbums = 5;
+          
+        function nextAlbum() {
+          currentIndex = (currentIndex + 1) % totalAlbums;
+          const slider = document.getElementById('albumSlider');
+          slider.style.transform = `translateX(-${currentIndex * 50}%)`;
+        }
+    </script>
 </body>
+<footer>
+    <img src="https://tse4.mm.bing.net/th?id=OIP.-aGuDPrIz_udrtk7UYFklwHaFO&pid=Api" alt="Graduation">
+</footer>
 </html>
